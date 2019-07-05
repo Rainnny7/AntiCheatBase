@@ -1,3 +1,5 @@
 name: AntiCheatBase
 version: ${project.version}
 main: me.rainnny.AntiCheatBase
+commands:
+  alerts:
