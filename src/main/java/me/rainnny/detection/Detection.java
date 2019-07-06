@@ -22,11 +22,12 @@ public abstract class Detection {
     public abstract void onMove(CheatUser user, Location to, Location from);
 
     protected void flag(CheatUser user) {
-        getOnlinePlayers().stream().filter(staff -> staff.hasPermission("anticheat.alerts") && AntiCheatBase.INSTANCE.getUserManager().get(staff).alerts).forEach(staff -> {
+        getOnlinePlayers().stream().filter(staff -> staff.hasPermission("anticheat.alerts")).forEach(staff -> {
             val n = name.split(" ");
             val vl = user.vl.getOrDefault(this, 1);
 
-            staff.sendMessage("§8[§c!§8] §f" + user.getPlayer().getName() + " §7is suspected of " + (experimental ? "§7§o*" : "§e") + n[0] + " §7(Type " + n[1] + ") §cx" + vl);
+            if (AntiCheatBase.INSTANCE.getUserManager().get(staff).alerts)
+                staff.sendMessage("§8[§c!§8] §f" + user.getPlayer().getName() + " §7is suspected of " + (experimental ? "§7§o*" : "§e") + n[0] + " §7(Type " + n[1] + ") §cx" + vl);
 
             user.vl.put(this, vl+1);
         });
@@ -37,6 +38,8 @@ public abstract class Detection {
     }
 
     protected void ban(CheatUser user, String reason) {
+        if (experimental)
+            return;
         user.getPlayer().kickPlayer("[ANTICHEAT] " + (reason == null ? "Unfair Advantage" : reason));
     }
 }
